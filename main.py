@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from typing import Optional
-from loader import Loader
+from model_handler import ModelHandler
 
 app = FastAPI()
 app.add_middleware(
@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-_loader = Loader()
+_model_handler = ModelHandler()
 
 @app.post("/generate")
 def infer(
@@ -23,7 +23,5 @@ def infer(
     prompt: str = Form(),
     chat_history: Optional[str] = Form(None)
 ):
-    # pipe = _loader.get_pipe(Loader.Module.TEXT_TO_IMAGE, model)
-    # img = inference(prompt, model, neg_prompt, cfg, seed, steps, aspect_ratio, pipe)
-    # return Response(img)
-    pass
+    output = _model_handler.generate(model_id, character_name, persona, prompt, chat_history)
+    return Response(output)
